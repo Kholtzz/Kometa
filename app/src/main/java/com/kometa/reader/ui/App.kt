@@ -1,3 +1,4 @@
+import androidx.compose.material3.Text
 package com.kometa.reader.ui
 
 import android.net.Uri
