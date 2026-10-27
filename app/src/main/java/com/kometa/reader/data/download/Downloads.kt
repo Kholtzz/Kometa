@@ -17,6 +17,7 @@ import com.kometa.reader.domain.model.Page
 import com.kometa.reader.domain.source.MangaSource
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
