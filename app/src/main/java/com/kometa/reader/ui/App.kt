@@ -1,7 +1,7 @@
-import androidx.compose.material3.Text
 package com.kometa.reader.ui
 
 import android.net.Uri
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BookmarkBorder
@@ -9,20 +9,25 @@ import androidx.compose.material.icons.filled.CollectionsBookmarks
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.NavHostController
+import com.kometa.reader.data.settings.ThemeMode
 import com.kometa.reader.ui.bookmarks.BookmarksScreen
 import com.kometa.reader.ui.details.DetailsScreen
 import com.kometa.reader.ui.explore.ExploreScreen
@@ -31,18 +36,20 @@ import com.kometa.reader.ui.library.LibraryScreen
 import com.kometa.reader.ui.reader.ReaderRoute
 import com.kometa.reader.ui.reader.WebViewReaderRoute
 import com.kometa.reader.ui.settings.SettingsScreen
+import com.kometa.reader.ui.settings.SettingsViewModel
 import com.kometa.reader.ui.theme.LocalGridColumns
 
 @Composable
 fun KometaRoot() {
-    val settingsVm: com.kometa.reader.ui.settings.SettingsViewModel = hiltViewModel()
+    val settingsVm: SettingsViewModel = hiltViewModel()
     val prefs by settingsVm.prefs.collectAsStateWithLifecycle()
 
-    androidx.compose.material3.MaterialTheme(
-        colorScheme = if (prefs.theme == com.kometa.reader.data.settings.ThemeMode.DARK ||
-            (prefs.theme == com.kometa.reader.data.settings.ThemeMode.SYSTEM &&
-                androidx.compose.foundation.isSystemInDarkTheme())
-        ) androidx.compose.material3.darkColorScheme() else androidx.compose.material3.lightColorScheme()
+    MaterialTheme(
+        colorScheme = when (prefs.theme) {
+            ThemeMode.DARK -> darkColorScheme()
+            ThemeMode.LIGHT -> lightColorScheme()
+            ThemeMode.SYSTEM -> if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+        }
     ) {
         CompositionLocalProvider(LocalGridColumns provides prefs.gridColumns) {
             val nav = rememberNavController()
